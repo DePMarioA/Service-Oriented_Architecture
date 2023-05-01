@@ -1,0 +1,423 @@
+MARIO ALVARADO HW
+FORMAT: comments, curl cmd -> output [...] curl  cmd -> output, then more comments
+
+outline:
+***mvn install***
+***curl GET quotes/getall***
+***curl GET quotes/1***
+***curl GET quotes/getall?page=2 ***
+***curl POST quotes/add***
+***curl PUT /quote/1***
+***curl DELETE /quote/2***
+***PAGINATION OUTPUT FROM ABOVE REQUESTS***
+***EXTRA curl EXAMPLES***
+
+
+
+*************************mvn install*******************************
+
+\Hello> mvn install
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< edu.mario.depaul:Hello >-----------------------
+[INFO] Building Hello 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ Hello ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO]
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ Hello ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 5 source files to C:\...\Hello\target\classes
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ Hello ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory C:\...\Hello\src\test\resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ Hello ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to C:\...\Hello\target\test-classes
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  8.095 s
+[INFO] Finished at: 2022-04-26T09:20:05-05:00
+[INFO] ------------------------------------------------------------------------
+
+*************************curl getall********************************
+
+
+//public Response getAllQuotes(@QueryParam("page") int page,@QueryParam("start") int start,@QueryParam("size") int size)
+
+
+\Hello> curl -v -X GET  http://localhost:8888/v1/quotes/getall   
+or
+\Hello> curl -v http://localhost:8888/v1/quotes/getall                                                                               
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/getall HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 274
+< Date: Tue, 26 Apr 2022 14:24:53 GMT
+<
+[{"id":1,"quotes":"When you have something to say, silence is a lie."},{"id":2,"quotes":"If you fulfill your obligations everyday you don't need to worry about the future."},{"id":3,"quotes":"Perhaps you are overvaluing what you don
+’t have and undervaluing what you do."}]* Connection #0 to host localhost left intact
+
+
+************************ curl GET quotes/1 *************************************
+
+//specific quote access Quotes getQuote(Integer id)
+
+Hello> curl -v -X GET  http://localhost:8888/v1/quotes/1                                                                                  
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/1 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 69
+< Date: Tue, 26 Apr 2022 16:08:19 GMT
+<
+{"id":1,"quotes":"When you have something to say, silence is a lie."}* Connection #0 to host localhost left intact
+
+*******************curl GET /getall?page=2   ***************************************
+//PAGINATION
+Hello>curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=2   
+or
+Hello> curl -v http://localhost:8888/v1/quotes/getall?page=2          
+
+
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/getall?page=2 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 198
+< Date: Tue, 26 Apr 2022 16:09:23 GMT
+<
+[{"id":4,"quotes":"The computer was born to solve problems that did not exist before."},{"id":5,"quotes":"A good programmer is someone who always looks both ways before crossing a one-way street."}]* Connection #0 to host localhost 
+left intact
+
+
+************************ curl /add *************************************
+//public Response addQuote(Quotes quotes)
+
+
+\Hello> curl -v -X POST -H "Content-Type: application/json"  -d '{ ""id"" : 27, ""quotes"" : ""mkyon"" }'  http://localhost:8888/v1/quotes/add
+or
+\Hello> curl -v  -H "Content-Type: application/json"  -d '{ ""id"" : 27, ""quotes"" : ""mkyon"" }'  http://localhost:8888/v1/quotes/add    
+
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> POST /v1/quotes/add HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 35
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 201
+< Location: http://localhost:8888/v1/quotes/27
+< Quote add: Quote{id: 27, quote:mkyon27}
+< Content-Length: 0
+< Date: Tue, 26 Apr 2022 16:21:30 GMT
+<
+* Connection #0 to host localhost left intact
+
+\Hello>  curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=2 
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/getall?page=2 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 227
+< Date: Tue, 26 Apr 2022 16:21:56 GMT
+<
+[{"id":4,"quotes":"The computer was born to solve problems that did not exist before."},{"id":5,"quotes":"A good programmer is someone who always looks both ways before crossing a one-way street."},{"id":27,"quotes":"mkyon27"}]* Con
+nection #0 to host localhost left intact
+
+
+//we can see Quote ID 27 is added and can see header location where to find it, < HTTP/1.1 201 < Location: http://localhost:8888/v1/quotes/27
+// pagination is working when adding
+
+***************** UPDATE curl /quote/1 **************************
+//Quotes updateQuote(@PathParam("id") Integer id,Quotes quotes)
+
+
+\Hello> curl -v -X PUT -H "Content-Type: application/json" -d '{ ""id"" : 1, ""quotes"" : ""mky1o1n"" }'  http://localhost:8888/v1/quotes/1    
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> PUT /v1/quotes/1 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 34
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 27
+< Date: Tue, 26 Apr 2022 16:25:18 GMT
+<
+{"id":1,"quotes":"mky1o1n"}* Connection #0 to host localhost left intact
+
+
+
+\Hello>  curl -v -X GET  http://localhost:8888/v1/quotes/1                                                                                  
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/1 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 27
+< Date: Tue, 26 Apr 2022 16:25:50 GMT
+<
+{"id":1,"quotes":"mky1o1n"}* Connection #0 to host localhost left intact
+
+\Hello> curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=1
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/getall?page=1 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 232
+< Date: Tue, 26 Apr 2022 16:26:27 GMT
+<
+[{"id":1,"quotes":"mky1o1n"},{"id":2,"quotes":"If you fulfill your obligations everyday you don't need to worry about the future."},{"id":3,"quotes":"Perhaps you are overvaluing what you don’t have and undervaluing what you do."}]* 
+Connection #0 to host localhost left intact
+
+
+//we can see that quote 1 has been updated 
+//Both get and pagination is working
+
+***************** DELETE curl /quote/2 **************************
+\Hello> curl -v -X DELETE -H "Content-Type: application/json" http://localhost:8888/v1/quotes/2          
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> DELETE /v1/quotes/2 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+> Content-Type: application/json
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 102
+< Date: Tue, 26 Apr 2022 16:27:50 GMT
+<
+{"id":2,"quotes":"If you fulfill your obligations everyday you don't need to worry about the future."}* Connection #0 to host localhost left intact
+
+
+\Hello> curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=1
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/getall?page=1 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 216
+< Date: Tue, 26 Apr 2022 16:28:32 GMT
+<
+[{"id":1,"quotes":"mky1o1n"},{"id":3,"quotes":"Perhaps you are overvaluing what you don’t have and undervaluing what you do."},{"id":4,"quotes":"The computer was born to solve problems that did not exist before."}]* Connection #0 to
+ host localhost left intact
+
+//Pagination is working on delete.
+//delete is working
+
+*************************PAGINATION OUTPUT FROM ABOVE REQUESTS*****************
+
+\Hello> curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=1
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 216
+< Date: Tue, 26 Apr 2022 16:30:37 GMT
+<
+[{"id":1,"quotes":"mky1o1n"},{"id":3,"quotes":"Perhaps you are overvaluing what you don’t have and undervaluing what you do."},{"id":4,"quotes":"The computer was born to solve problems that did not exist before."}]* Connection #0 to
+ host localhost left intact
+
+\Hello> curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=2
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+> GET /v1/quotes/getall?page=2 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 140
+< Date: Tue, 26 Apr 2022 16:30:41 GMT
+<
+[{"id":5,"quotes":"A good programmer is someone who always looks both ways before crossing a one-way street."},{"id":27,"quotes":"mkyon27"}]* Connection #0 to host localhost left intact
+
+\Hello> curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=3
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/getall?page=3 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 204
+< End: YOU'VE REACH THE END OF THE LIST
+< Date: Tue, 26 Apr 2022 16:30:53 GMT
+<
+* Connection #0 to host localhost left intact
+
+****************adding to create page 3**************
+curl -v  -H "Content-Type: application/json"  -d '{ ""id"" : 80, ""quotes"" : ""mkyon80"" }'  http://localhost:8888/v1/quotes/add 
+
+Hello> curl -v  -H "Content-Type: application/json"  -d '{ ""id"" : 7, ""quotes"" : ""mkyon7"" }'  http://localhost:8888/v1/quotes/add   
+
+// pagination: p1,p2,p3
+
+\Hello>  curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=1                                                                        
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+> GET /v1/quotes/getall?page=1 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 158
+< Date: Tue, 26 Apr 2022 16:37:52 GMT
+<
+[{"id":80,"quotes":"mkyon80"},{"id":1,"quotes":"mky1o1n"},{"id":3,"quotes":"Perhaps you are overvaluing what you don’t have and undervaluing what you do."}]* Connection #0 to host localhost left intact
+
+
+\Hello>  curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=2                                                                    
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 225
+< Date: Tue, 26 Apr 2022 16:38:23 GMT
+<
+[{"id":4,"quotes":"The computer was born to solve problems that did not exist before."},{"id":5,"quotes":"A good programmer is someone who always looks both ways before crossing a one-way street."},{"id":7,"quotes":"mkyon7"}]* Conne
+ction #0 to host localhost left intact
+
+\Hello>  curl -v -X GET  http://localhost:8888/v1/quotes/getall?page=3 
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/getall?page=3 HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 30
+< Date: Tue, 26 Apr 2022 16:38:29 GMT
+<
+[{"id":27,"quotes":"mkyon27"}]* Connection #0 to host localhost left intact
+
+*********************EXTRA CURL EXAMPLES*************************
+// if no id is present a new one will be created based on the largest entry created 
+
+\Hello> curl -v  -H "Content-Type: application/json"  -d '{  ""quotes"" : ""mkyon unknown ID"" }'  http://localhost:8888/v1/quotes/add    
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> POST /v1/quotes/add HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 34
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 201
+< Location: http://localhost:8888/v1/quotes/81
+< Quote add: Quote{id: 81, quote:mkyon unknown ID}
+< Content-Length: 0
+< Date: Tue, 26 Apr 2022 16:44:10 GMT
+<
+* Connection #0 to host localhost left intact
+
+
+*****************to get size of db****************
+curl -v -X GET  http://localhost:8888/v1/quotes/size          
+Note: Unnecessary use of -X or --request, GET is already inferred.
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888 (#0)
+> GET /v1/quotes/size HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/7.79.1
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200
+< Content-Type: application/json
+< Content-Length: 7
+< Date: Tue, 26 Apr 2022 16:41:17 GMT
+<
+Size: 7* Connection #0 to host localhost left intact
